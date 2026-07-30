@@ -1,0 +1,198 @@
+// Replace table/column names only after the target star schema is created.
+// Currency is THB excluding VAT unless the KPI dictionary states otherwise.
+
+Actual Cost :=
+SUM ( FactCostTransaction[AmountExVAT] )
+
+Open Commitment :=
+CALCULATE (
+    SUM ( FactCommitment[AmountExVAT] ),
+    FactCommitment[Status] IN { "Open", "Received" }
+)
+
+Accrued Cost :=
+SUM ( FactAccrual[AmountExVAT] )
+
+Cost Exposure :=
+[Actual Cost] + [Open Commitment] + [Accrued Cost]
+
+Baseline 2025 Cost :=
+CALCULATE (
+    [Cost Exposure],
+    REMOVEFILTERS ( DimDate ),
+    DimDate[Year] = 2025,
+    DimDate[IsFinanceLocked] = TRUE ()
+)
+
+Reduction Target % :=
+0.20
+
+Target Cost 2025 Basis :=
+[Baseline 2025 Cost] * ( 1 - [Reduction Target %] )
+
+Latest Complete Date :=
+MAXX (
+    FILTER (
+        ALL ( DimDate ),
+        DimDate[IsPeriodComplete] = TRUE ()
+            && DimDate[Date] <= TODAY ()
+    ),
+    DimDate[Date]
+)
+
+Current Comparable Exposure :=
+VAR _Cutoff = [Latest Complete Date]
+VAR _CurrentYear = YEAR ( _Cutoff )
+RETURN
+    CALCULATE (
+        [Cost Exposure],
+        REMOVEFILTERS ( DimDate ),
+        DimDate[Year] = _CurrentYear,
+        DimDate[Date] <= _Cutoff
+    )
+
+Baseline Comparable Exposure :=
+VAR _Cutoff = [Latest Complete Date]
+VAR _BaselineCutoff = DATE ( 2025, MONTH ( _Cutoff ), DAY ( _Cutoff ) )
+RETURN
+    CALCULATE (
+        [Cost Exposure],
+        REMOVEFILTERS ( DimDate ),
+        DimDate[Year] = 2025,
+        DimDate[Date] <= _BaselineCutoff
+    )
+
+Gross Saving Comparable :=
+[Baseline Comparable Exposure] - [Current Comparable Exposure]
+
+Cost Reduction % :=
+DIVIDE ( [Gross Saving Comparable], [Baseline Comparable Exposure] )
+
+Saving Target Comparable :=
+[Baseline Comparable Exposure] * [Reduction Target %]
+
+Gap to 20% Target :=
+[Gross Saving Comparable] - [Saving Target Comparable]
+
+Target Status :=
+SWITCH (
+    TRUE (),
+    [Finance Reconciliation Variance %] > 0.01, "BLOCKED - RECONCILIATION",
+    [Data Completeness %] < 0.95, "BLOCKED - DATA QUALITY",
+    [Cost Reduction %] >= [Reduction Target %], "ON TARGET",
+    "BELOW TARGET"
+)
+
+Work Order Count :=
+DISTINCTCOUNT ( FactServiceOrder[ServiceID] )
+
+PM Cost :=
+CALCULATE ( [Cost Exposure], DimWorkType[WorkTypeCode] = "PM" )
+
+CM Cost :=
+CALCULATE ( [Cost Exposure], DimWorkType[WorkTypeCode] = "CM" )
+
+CM Share % :=
+DIVIDE ( [CM Cost], [PM Cost] + [CM Cost] )
+
+Unknown Symptom Cost :=
+CALCULATE (
+    [Cost Exposure],
+    DimSymptom[IsUnknown] = TRUE ()
+)
+
+Unknown Symptom Cost % :=
+DIVIDE ( [Unknown Symptom Cost], [Cost Exposure] )
+
+Repeat Repair 90D Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsRepeat90D] = TRUE ()
+)
+
+Repeat Repair 90D % :=
+DIVIDE ( [Repeat Repair 90D Count], [Work Order Count] )
+
+Self Eligible Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[MaintenanceLevel] IN { "L0", "L1" }
+)
+
+Self Resolved Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSelfMaintenance] = TRUE (),
+    FactServiceOrder[ReopenedWithin30D] = FALSE ()
+)
+
+Self Resolution Rate :=
+DIVIDE ( [Self Resolved Count], [Self Eligible Count] )
+
+Validated Avoided Dispatch Cost :=
+SUMX (
+    FILTER (
+        FactMaintenanceAction,
+        FactMaintenanceAction[Outcome] = "Resolved"
+            && FactMaintenanceAction[ActionType] IN { "Remote", "Self" }
+            && FactMaintenanceAction[ReopenedWithin30D] = FALSE ()
+    ),
+    MAX (
+        0,
+        FactMaintenanceAction[StandardDispatchCost]
+            - FactMaintenanceAction[InterventionCost]
+    )
+)
+
+Finance Approved Net Saving :=
+CALCULATE (
+    SUM ( FactSavingLedger[NetSaving] ),
+    FactSavingLedger[FinanceStatus] = "Approved"
+)
+
+Finance Control Total :=
+SUM ( FinanceControl[AmountExVAT] )
+
+Data Completeness % :=
+VAR _WorkTypeCoverage =
+    DIVIDE (
+        CALCULATE ( [Work Order Count], NOT ISBLANK ( FactServiceOrder[WorkTypeCode] ) ),
+        [Work Order Count]
+    )
+VAR _SymptomCoverage =
+    DIVIDE (
+        CALCULATE (
+            [Work Order Count],
+            NOT ISBLANK ( FactServiceOrder[SymptomCode] ),
+            FactServiceOrder[SymptomCode] <> "UNKNOWN_PENDING_REVIEW"
+        ),
+        [Work Order Count]
+    )
+VAR _AssetCoverage =
+    DIVIDE (
+        CALCULATE ( [Work Order Count], NOT ISBLANK ( FactServiceOrder[AssetKey] ) ),
+        [Work Order Count]
+    )
+RETURN
+    MIN ( _WorkTypeCoverage, MIN ( _SymptomCoverage, _AssetCoverage ) )
+
+Finance Reconciliation Variance :=
+[Cost Exposure] - [Finance Control Total]
+
+Finance Reconciliation Variance % :=
+DIVIDE ( ABS ( [Finance Reconciliation Variance] ), [Finance Control Total] )
+
+Saving KPI Display :=
+VAR _Status = [Target Status]
+RETURN
+    IF (
+        LEFT ( _Status, 7 ) = "BLOCKED",
+        BLANK (),
+        [Cost Reduction %]
+    )
+
+Last Source Refresh :=
+MAX ( RefreshAudit[SourceUpdatedAt] )
+
+Freshness Minutes :=
+DATEDIFF ( [Last Source Refresh], NOW (), MINUTE )

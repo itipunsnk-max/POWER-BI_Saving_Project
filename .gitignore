@@ -1,0 +1,18 @@
+# Source artifacts may contain operational or personal information.
+*.pbix
+*.pbit
+*.docx
+*.pdf
+*.xlsx
+*.xls
+
+# Local review outputs
+tmp/
+output/
+*.log
+assets/infographic/*.png
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

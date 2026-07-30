@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1260" role="img" aria-labelledby="title desc">
+  <title id="title">คัดกรองอาการก่อนเปิดงานซ่อม</title>
+  <desc id="desc">ห้าขั้นตอนคัดกรองอาการ พร้อมขอบเขตความปลอดภัยสำหรับอุปกรณ์สถานีบริการ</desc>
+  <defs>
+    <linearGradient id="header" x1="0" x2="1">
+      <stop offset="0" stop-color="#071b3f"/>
+      <stop offset="1" stop-color="#0c2d60"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#071b3f" flood-opacity=".12"/>
+    </filter>
+    <style>
+      .font{font-family:"Segoe UI",Tahoma,Arial,sans-serif}
+      .title{font-size:48px;font-weight:800;fill:#fff}
+      .step{font-size:30px;font-weight:750;fill:#071b3f}
+      .sub{font-size:20px;fill:#5e6b80}
+      .num{font-size:48px;font-weight:900;fill:#fff}
+      .safe{font-size:25px;font-weight:800;fill:#b42318}
+    </style>
+  </defs>
+  <rect width="900" height="1260" fill="#f6f8fb"/>
+  <g filter="url(#shadow)">
+    <rect x="48" y="42" width="804" height="128" rx="22" fill="url(#header)"/>
+    <text x="450" y="122" text-anchor="middle" class="font title">คัดกรองอาการก่อนเปิดงานซ่อม</text>
+  </g>
+  <g class="font">
+    <g transform="translate(68 210)">
+      <rect width="764" height="142" rx="20" fill="#fff" stroke="#c9d5e6"/>
+      <path d="M0 20a20 20 0 0 1 20-20h110l44 71-44 71H20a20 20 0 0 1-20-20z" fill="#071b3f"/>
+      <text x="72" y="88" text-anchor="middle" class="num">1</text>
+      <text x="205" y="64" class="step">สังเกตอาการ</text>
+      <text x="205" y="101" class="sub">หยุดใช้เมื่อพบกลิ่นรั่ว ไฟฟ้า หรือการจ่ายผิดปกติ</text>
+      <path d="M690 34l42 76h-84z" fill="#ffb020" stroke="#071b3f" stroke-width="7"/>
+      <text x="690" y="94" text-anchor="middle" font-size="50" font-weight="900" fill="#071b3f">!</text>
+    </g>
+    <g transform="translate(68 378)">
+      <rect width="764" height="142" rx="20" fill="#fff" stroke="#c9d5e6"/>
+      <path d="M0 20a20 20 0 0 1 20-20h110l44 71-44 71H20a20 20 0 0 1-20-20z" fill="#071b3f"/>
+      <text x="72" y="88" text-anchor="middle" class="num">2</text>
+      <text x="205" y="64" class="step">ถ่ายรูป + Asset No.</text>
+      <text x="205" y="101" class="sub">แนบภาพรวม จุดอาการ ป้าย Asset และ Error code</text>
+      <rect x="636" y="32" width="94" height="78" rx="10" fill="#16c5ff" stroke="#071b3f" stroke-width="6"/>
+      <circle cx="683" cy="72" r="24" fill="#fff" stroke="#071b3f" stroke-width="6"/>
+      <rect x="655" y="21" width="38" height="18" rx="5" fill="#071b3f"/>
+    </g>
+    <g transform="translate(68 546)">
+      <rect width="764" height="142" rx="20" fill="#fff" stroke="#c9d5e6"/>
+      <path d="M0 20a20 20 0 0 1 20-20h110l44 71-44 71H20a20 20 0 0 1-20-20z" fill="#071b3f"/>
+      <text x="72" y="88" text-anchor="middle" class="num">3</text>
+      <text x="205" y="64" class="step">ตรวจภายนอกอย่างปลอดภัย</text>
+      <text x="205" y="101" class="sub">ทำเฉพาะรายการใน SOP ที่อนุมัติและไม่เปิดอุปกรณ์</text>
+      <circle cx="680" cy="69" r="37" fill="none" stroke="#16c5ff" stroke-width="10"/>
+      <path d="M705 96l36 33" stroke="#071b3f" stroke-width="14" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(68 714)">
+      <rect width="764" height="142" rx="20" fill="#fff" stroke="#c9d5e6"/>
+      <path d="M0 20a20 20 0 0 1 20-20h110l44 71-44 71H20a20 20 0 0 1-20-20z" fill="#071b3f"/>
+      <text x="72" y="88" text-anchor="middle" class="num">4</text>
+      <text x="205" y="64" class="step">เช็กประวัติซ่อมซ้ำ</text>
+      <text x="205" y="101" class="sub">ดู 30/60/90 วัน Warranty และ Vendor เดิม</text>
+      <rect x="628" y="30" width="118" height="82" rx="9" fill="#e9f8ff" stroke="#071b3f" stroke-width="6"/>
+      <path d="M648 55h72M648 76h72M648 97h48" stroke="#16c5ff" stroke-width="8" stroke-linecap="round"/>
+    </g>
+    <g transform="translate(68 882)">
+      <rect width="764" height="142" rx="20" fill="#fff" stroke="#c9d5e6"/>
+      <path d="M0 20a20 20 0 0 1 20-20h110l44 71-44 71H20a20 20 0 0 1-20-20z" fill="#071b3f"/>
+      <text x="72" y="88" text-anchor="middle" class="num">5</text>
+      <text x="205" y="58" class="step">เลือก Self Maintenance</text>
+      <text x="205" y="98" class="step">หรือ Vendor</text>
+      <circle cx="660" cy="70" r="43" fill="#e9f8ff" stroke="#16c5ff" stroke-width="6"/>
+      <path d="M643 89l39-39M639 51l42 42" stroke="#071b3f" stroke-width="12" stroke-linecap="round"/>
+      <text x="726" y="78" font-size="28" font-weight="800" fill="#071b3f">L0-L3</text>
+    </g>
+    <g transform="translate(48 1060)">
+      <rect width="804" height="154" rx="22" fill="#fff" stroke="#d92d20" stroke-width="4"/>
+      <circle cx="85" cy="76" r="48" fill="#fff1f0" stroke="#d92d20" stroke-width="7"/>
+      <path d="M51 42l68 68" stroke="#d92d20" stroke-width="9"/>
+      <text x="155" y="62" class="safe">ห้ามเปิดตู้ · ห้ามทำงานไฟฟ้า · ห้ามถอดระบบน้ำมัน</text>
+      <text x="155" y="104" font-size="23" font-weight="700" fill="#071b3f">งานทดสอบตามกฎหมายต้องดำเนินการโดยผู้มีคุณสมบัติ</text>
+    </g>
+  </g>
+</svg>

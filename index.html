@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Power BI Saving Project - แผนลดต้นทุนงานซ่อมและงานทดสอบ 20%">
+  <title>Power BI Saving Project</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="hero">
+    <nav class="nav wrap" aria-label="เมนูหลัก">
+      <a class="brand" href="#top">Saving<span>BI</span></a>
+      <div class="nav-links">
+        <a href="#assessment">สถานะ</a>
+        <a href="#dashboard">Power BI</a>
+        <a href="#saving">ลดต้นทุน</a>
+        <a href="#self">Self Maintenance</a>
+        <a href="#roadmap">Roadmap</a>
+      </div>
+    </nav>
+
+    <div id="top" class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">POWER BI SAVING PROJECT · JUL 2026</p>
+        <h1>ลดต้นทุนงานซ่อม<br><span>ให้พิสูจน์ได้จริง</span></h1>
+        <p class="lead">
+          ระบบตัดสินใจสำหรับ PM, CM, งานทดสอบตามกฎหมาย และ Self Maintenance
+          โดยแยกผลประหยัดจริงออกจากผลของข้อมูลล่าช้าและงานค้างวางบิล
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#dashboard">ดู Dashboard Blueprint</a>
+          <a class="button ghost" href="README.md">อ่านคู่มือ Markdown</a>
+        </div>
+      </div>
+      <div class="target-card" aria-label="เป้าหมายลดต้นทุน">
+        <p>เป้าหมายองค์กร</p>
+        <strong>20%</strong>
+        <span>เทียบ Baseline 2025</span>
+        <div class="target-line">
+          <b>2.518M</b>
+          <small>Working saving target</small>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section id="assessment" class="section wrap">
+      <div class="section-head">
+        <p class="eyebrow">01 · CURRENT STATE</p>
+        <h2>สิ่งแรกที่ต้องแก้ ไม่ใช่สีของกราฟ</h2>
+        <p>Baseline สองชุดต่างกันเกือบเท่าเป้าหมาย 20% จึงต้อง Reconcile ก่อนประกาศผล</p>
+      </div>
+
+      <div class="metrics">
+        <article class="metric">
+          <span>PM/CM Baseline 2025</span>
+          <strong>฿12.590M</strong>
+          <small>จากสรุปจำแนกประเภทงาน</small>
+        </article>
+        <article class="metric">
+          <span>Service Baseline 2025</span>
+          <strong>฿15.359M</strong>
+          <small>ฐานที่ Dashboard ใช้อยู่</small>
+        </article>
+        <article class="metric warn">
+          <span>Baseline variance</span>
+          <strong>฿2.769M</strong>
+          <small>18.03% · ต้องปิด Reconciliation</small>
+        </article>
+        <article class="metric">
+          <span>Service freshness</span>
+          <strong>22 Jul</strong>
+          <small>ช้ากว่าไฟล์ทำงานที่ตรวจพบ</small>
+        </article>
+      </div>
+
+      <div class="callout">
+        <div class="callout-icon">!</div>
+        <div>
+          <h3>ค่า “ลด 50.04%” ยังเป็น Provisional</h3>
+          <p>
+            ต้องรวม Actual + Commitment + Accrual, ใช้ Latest Complete Period
+            และผ่าน Finance lock ก่อน การจ่ายช้าหรือใบแจ้งหนี้ยังไม่เข้าระบบ
+            ไม่ใช่ผลประหยัด
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section id="dashboard" class="section dark">
+      <div class="wrap">
+        <div class="section-head">
+          <p class="eyebrow cyan">02 · POWER BI PRODUCT</p>
+          <h2>10 หน้าที่พาจากตัวเลขไปสู่การลงมือ</h2>
+        </div>
+        <div class="page-grid">
+          <article><b>01</b><h3>Saving Control Tower</h3><p>Baseline, Exposure, Saving, Gap, Data quality</p></article>
+          <article><b>02</b><h3>PM / CM Portfolio</h3><p>Cost, volume, cost/job และ movement</p></article>
+          <article><b>03</b><h3>Symptom Pareto</h3><p>Top causes + cumulative impact + Unknown</p></article>
+          <article><b>04</b><h3>Repair Path Sankey</h3><p>Type → Asset → Symptom → Resolution → Outcome</p></article>
+          <article><b>05</b><h3>Bad Actor Asset</h3><p>Repeat, MTBF, lifecycle cost, replace flag</p></article>
+          <article><b>06</b><h3>Self Maintenance</h3><p>Eligible, resolved, avoided dispatch, reopen</p></article>
+          <article><b>07</b><h3>Vendor & Warranty</h3><p>SLA, price variance, repeat, warranty recovery</p></article>
+          <article><b>08</b><h3>PM & Legal</h3><p>Due, overdue, compliance, geographic bundle</p></article>
+          <article><b>09</b><h3>Budget & Forecast</h3><p>Budget, actual, commitment, accrual, EAC</p></article>
+          <article><b>10</b><h3>Data Quality</h3><p>Freshness, coverage, duplicate, reconciliation</p></article>
+        </div>
+
+        <div class="architecture">
+          <span>Service / SAP / Asset / Budget</span><i>→</i>
+          <span>Dataflow / Lakehouse</span><i>→</i>
+          <span>Star Semantic Model</span><i>→</i>
+          <span>Power BI + Alerts</span>
+        </div>
+        <p class="fine">
+          ค่าเริ่มต้นที่เหมาะสมคือ Near-real-time 30-60 นาที ไม่จำเป็นต้องใช้
+          streaming ทุกข้อมูล; หาก SLA ต่ำกว่า 5 นาทีจึงพิจารณา Fabric
+          Real-Time Intelligence
+        </p>
+      </div>
+    </section>
+
+    <section id="saving" class="section wrap">
+      <div class="section-head">
+        <p class="eyebrow">03 · 20% SAVING PLAN</p>
+        <h2>แบ่งเป้าหมาย 2.518 ล้านบาทเป็นคันโยกที่มี Owner</h2>
+      </div>
+
+      <div class="saving-layout">
+        <div class="lever-list" role="list">
+          <div class="lever" role="listitem" data-value="950000">
+            <div><b>Preventable CM / Repeat</b><small>37.7%</small></div>
+            <div class="bar"><span style="--w:95%"></span></div><strong>฿950K</strong>
+          </div>
+          <div class="lever" role="listitem" data-value="500000">
+            <div><b>Vendor / Parts</b><small>19.9%</small></div>
+            <div class="bar"><span style="--w:50%"></span></div><strong>฿500K</strong>
+          </div>
+          <div class="lever" role="listitem" data-value="450000">
+            <div><b>PM & Legal Bundling</b><small>17.9%</small></div>
+            <div class="bar"><span style="--w:45%"></span></div><strong>฿450K</strong>
+          </div>
+          <div class="lever" role="listitem" data-value="400000">
+            <div><b>Repair vs Replace / Reuse</b><small>15.9%</small></div>
+            <div class="bar"><span style="--w:40%"></span></div><strong>฿400K</strong>
+          </div>
+          <div class="lever" role="listitem" data-value="218001">
+            <div><b>Billing / Duplicate Control</b><small>8.7%</small></div>
+            <div class="bar"><span style="--w:22%"></span></div><strong>฿218K</strong>
+          </div>
+        </div>
+        <aside class="focus-card">
+          <p>Focus first</p>
+          <h3>5 อาการ = ฿7.52M</h3>
+          <ol>
+            <li>แม่ปั๊ม / มิเตอร์</li>
+            <li>มอเตอร์ / สายพาน</li>
+            <li>สายยาง</li>
+            <li>มือจ่าย</li>
+            <li>การแสดงผล</li>
+          </ol>
+          <span>48.94% ของ Service baseline 2025</span>
+        </aside>
+      </div>
+    </section>
+
+    <section id="self" class="section soft">
+      <div class="wrap two-col">
+        <div>
+          <div class="section-head">
+            <p class="eyebrow">04 · SELF MAINTENANCE</p>
+            <h2>ช่วยได้ โดยไม่ข้ามเส้นความปลอดภัย</h2>
+          </div>
+          <div class="levels">
+            <div><b>L0</b><span>Observe</span><small>หยุดใช้ กั้นพื้นที่ เก็บหลักฐาน</small></div>
+            <div><b>L1</b><span>Guided</span><small>เฉพาะ SOP ที่ผู้ผลิตอนุมัติ</small></div>
+            <div><b>L2</b><span>Technical</span><small>ช่าง/ผู้รับจ้างที่ผ่านคุณสมบัติ</small></div>
+            <div><b>L3</b><span>Statutory</span><small>ผู้ทดสอบ/ตรวจสอบตามกฎหมาย</small></div>
+          </div>
+          <div class="danger">
+            <strong>ห้าม</strong>
+            เปิดตู้ · ทำงานไฟฟ้า · ถอดระบบน้ำมัน · ทดสอบแทนผู้มีคุณสมบัติ
+          </div>
+        </div>
+        <figure class="infographic">
+          <img src="assets/infographic/repair-triage-safe.svg"
+               alt="Infographic 5 ขั้นตอนคัดกรองอาการก่อนเปิดงานซ่อม">
+          <figcaption>ต้นแบบ Infographic สำหรับ Pilot</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section id="roadmap" class="section wrap">
+      <div class="section-head">
+        <p class="eyebrow">05 · DELIVERY ROADMAP</p>
+        <h2>12 สัปดาห์ จาก Prototype สู่การใช้จริง</h2>
+      </div>
+      <div class="timeline">
+        <article><span>W1</span><h3>Governance</h3><p>Baseline, KPI, Safety sign-off</p></article>
+        <article><span>W1-3</span><h3>Data Foundation</h3><p>Star model, mapping, reconciliation</p></article>
+        <article><span>W3-5</span><h3>Executive MVP</h3><p>Control tower + Pareto + DQ</p></article>
+        <article><span>W5-8</span><h3>Operational Pilot</h3><p>Top 5 symptoms + saving ledger</p></article>
+        <article><span>W9-12</span><h3>Scale</h3><p>Vendor, PM, Sankey, automation</p></article>
+      </div>
+
+      <div class="exit-gate">
+        <h3>Definition of Done</h3>
+        <ul>
+          <li>Finance reconciliation variance ≤ 1%</li>
+          <li>Unknown symptom cost ≤ 5%</li>
+          <li>Asset/SAP match ≥ 98%</li>
+          <li>Monthly approved saving run-rate ≥ ฿209,833</li>
+          <li>Legal compliance 100% และ Safety incident = 0</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-grid">
+      <div><b>POWER BI SAVING PROJECT</b><p>Decision-ready maintenance analytics</p></div>
+      <div><a href="docs/05-implementation-runbook.md">Runbook</a> · <a href="powerbi/measures.dax">DAX</a> · <a href="powerbi/data-contract.md">Data contract</a></div>
+    </div>
+  </footer>
+</body>
+</html>
