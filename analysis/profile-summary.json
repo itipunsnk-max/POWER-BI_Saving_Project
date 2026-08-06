@@ -1,0 +1,225 @@
+{
+  "audit": {
+    "audit_date": "2026-08-07",
+    "timezone": "Asia/Bangkok",
+    "source_file": "service_tracking_cleaned-Rev.1.xlsx",
+    "source_size_bytes": 620509,
+    "source_last_modified": "2026-08-07T01:49:41+07:00",
+    "source_sha256": "baf33afabb99c9aa901a399650a9b46e1c01c8ebb51b3fd6164f8d28bee40d96",
+    "privacy_mode": "aggregate_only_no_raw_values"
+  },
+  "workbook": {
+    "sheet_count": 2,
+    "external_links": 0,
+    "defined_names": 0,
+    "creator_metadata_present": true,
+    "last_modified_by_metadata_present": true,
+    "sheets": [
+      {
+        "name": "Clean_Data",
+        "data_rows": 1586,
+        "columns": 52,
+        "formula_cells": 0,
+        "comments": 0,
+        "hyperlinks": 0,
+        "hidden_rows": 0,
+        "hidden_columns": 0
+      },
+      {
+        "name": "Cost_Summary",
+        "data_rows": 85,
+        "columns": 5,
+        "formula_cells": 0,
+        "comments": 0,
+        "hyperlinks": 0,
+        "internal_group_aggregates_checked": 78,
+        "internal_group_aggregate_mismatches_over_0_01": 0
+      }
+    ]
+  },
+  "grain": {
+    "observed_grain": "one_row_per_service_id",
+    "row_count": 1586,
+    "service_id_null": 0,
+    "service_id_distinct": 1586,
+    "service_id_duplicate_rows": 0,
+    "exact_duplicate_rows": 0,
+    "pmorder_null": 0,
+    "pmorder_distinct": 1586,
+    "pmorder_check_mismatch": 0
+  },
+  "columns": {
+    "SERVICE_ID": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 1586, "type_counts": {"integer": 1586}},
+    "SERVICE_NO": {"non_null": 1449, "null": 137, "null_pct": 8.64, "distinct_normalized": 1449, "type_counts": {"string": 1449}},
+    "MM": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 19, "type_counts": {"string": 1586}},
+    "SITE_ID": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 696, "type_counts": {"integer": 40, "string": 1546}},
+    "SITE_NAME": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 739, "type_counts": {"string": 1586}},
+    "PMORDER": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 1586, "type_counts": {"integer": 1, "string": 1585}},
+    "SERVICE_DATE": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 1505, "type_counts": {"datetime": 1586}},
+    "ASSIGNED_DATE": {"non_null": 1451, "null": 135, "null_pct": 8.51, "distinct_normalized": 1449, "type_counts": {"datetime": 1451}},
+    "WORKINPROGRESS": {"non_null": 1053, "null": 533, "null_pct": 33.61, "distinct_normalized": 1049, "type_counts": {"datetime": 933, "string": 120}},
+    "RESOLVED_DATE": {"non_null": 1436, "null": 150, "null_pct": 9.46, "distinct_normalized": 1434, "type_counts": {"datetime": 1224, "string": 212}},
+    "CLOSE_DATE": {"non_null": 1585, "null": 1, "null_pct": 0.06, "distinct_normalized": 1503, "type_counts": {"datetime": 1585}},
+    "RESOLUTION_TIME": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 10, "type_counts": {"integer": 1450}},
+    "TOTALTIME": {"non_null": 1449, "null": 137, "null_pct": 8.64, "distinct_normalized": 1303, "type_counts": {"integer": 1449}},
+    "SLA_STATUS": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 3, "type_counts": {"string": 1450}},
+    "TECHNICIAN_TIME": {"non_null": 1435, "null": 151, "null_pct": 9.52, "distinct_normalized": 1224, "type_counts": {"integer": 1223, "string": 212}},
+    "TECHNICIAN_STATUS": {"non_null": 1492, "null": 94, "null_pct": 5.93, "distinct_normalized": 3, "type_counts": {"string": 1492}},
+    "GROUP_ID": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 3, "type_counts": {"integer": 1450}},
+    "GROUP_NAME": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 3, "type_counts": {"string": 1586}},
+    "VENDOR_CODE": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 9, "type_counts": {"string": 1450}},
+    "VENDOR_NAME": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 9, "type_counts": {"string": 1586}},
+    "CALL_DETAIL": {"non_null": 1555, "null": 31, "null_pct": 1.95, "distinct_normalized": 1491, "type_counts": {"string": 1555}},
+    "PROBLEM_TYPE_DESC": {"non_null": 1555, "null": 31, "null_pct": 1.95, "distinct_normalized": 6, "type_counts": {"string": 1555}},
+    "OBJECT_PART": {"non_null": 1555, "null": 31, "null_pct": 1.95, "distinct_normalized": 11, "type_counts": {"string": 1555}},
+    "OBJECT_PART_ITEM": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 20, "type_counts": {"string": 1450}},
+    "PROB_DETAIL_DESC": {"non_null": 1375, "null": 211, "null_pct": 13.3, "distinct_normalized": 48, "type_counts": {"string": 1375}},
+    "DAMAGE": {"non_null": 1555, "null": 31, "null_pct": 1.95, "distinct_normalized": 20, "type_counts": {"string": 1555}},
+    "PROB_RESOLVE_DESC": {"non_null": 1555, "null": 31, "null_pct": 1.95, "distinct_normalized": 21, "type_counts": {"string": 1555}},
+    "SERVICE_STATUS": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 2, "type_counts": {"string": 1450}},
+    "SERVICE_STATUS_DESC": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 2, "type_counts": {"string": 1586}},
+    "SEVERITY_LEVEL": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 11, "type_counts": {"string": 1450}},
+    "SEVERITY_LEVEL_DESC": {"non_null": 1449, "null": 137, "null_pct": 8.64, "distinct_normalized": 11, "type_counts": {"string": 1449}},
+    "PMACTTYPES": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 2, "type_counts": {"string": 1586}},
+    "PMACTTYPES_DESC": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 2, "type_counts": {"string": 1586}},
+    "SAP_PM_ORDER_TYPE": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 3, "type_counts": {"string": 1450}},
+    "SAP_PM_ORDER_TYPE_DESC": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 3, "type_counts": {"string": 1450}},
+    "TECHNICIAN_NAME": {"non_null": 1449, "null": 137, "null_pct": 8.64, "distinct_normalized": 6, "type_counts": {"string": 1449}},
+    "PROVINCE_NAME": {"non_null": 1559, "null": 27, "null_pct": 1.7, "distinct_normalized": 128, "type_counts": {"string": 1559}},
+    "PTT_TECHNICIAN_TIME": {"non_null": 1435, "null": 151, "null_pct": 9.52, "distinct_normalized": 1224, "type_counts": {"integer": 1223, "string": 212}},
+    "PTT_TECHNICIAN_STATUS": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 3, "type_counts": {"string": 1450}},
+    "PTT_CALLCENTER_TIME": {"non_null": 1435, "null": 151, "null_pct": 9.52, "distinct_normalized": 683, "type_counts": {"string": 1435}},
+    "PARENT_GROUP_NAME": {"non_null": 1459, "null": 127, "null_pct": 8.01, "distinct_normalized": 3, "type_counts": {"string": 1459}},
+    "USER_UPDATED_NEW": {"non_null": 1446, "null": 140, "null_pct": 8.83, "distinct_normalized": 18, "type_counts": {"string": 1446}},
+    "USER_UPDATED_ASSIGNED": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 14, "type_counts": {"string": 1450}},
+    "USER_UPDATED_TO_TECHNICIAN": {"non_null": 1450, "null": 136, "null_pct": 8.58, "distinct_normalized": 16, "type_counts": {"string": 1450}},
+    "USER_UPDATED_ON_THE_WAY": {"non_null": 1140, "null": 446, "null_pct": 28.12, "distinct_normalized": 29, "type_counts": {"string": 1140}},
+    "USER_UPDATED_INPROGRESS": {"non_null": 1052, "null": 534, "null_pct": 33.67, "distinct_normalized": 24, "type_counts": {"string": 1052}},
+    "USER_UPDATED_RESOLVED": {"non_null": 1435, "null": 151, "null_pct": 9.52, "distinct_normalized": 34, "type_counts": {"string": 1435}},
+    "USER_UPDATED_CLOSED": {"non_null": 1585, "null": 1, "null_pct": 0.06, "distinct_normalized": 13, "type_counts": {"string": 1585}},
+    "GRADE": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 6, "type_counts": {"string": 1586}},
+    "เลข Asset (จริงหน้างาน,CAMS (รอเช็ค))": {"non_null": 170, "null": 1416, "null_pct": 89.28, "distinct_normalized": 162, "type_counts": {"string": 170}},
+    "ตรวจสอบ PMORDER": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 1586, "type_counts": {"integer": 1, "string": 1585}},
+    "จำนวนยอดเงิน": {"non_null": 1586, "null": 0, "null_pct": 0.0, "distinct_normalized": 1212, "type_counts": {"integer": 1332, "float": 254}}
+  },
+  "cost_profile": {
+    "currency_declared_in_workbook": false,
+    "ex_vat_status_declared_in_workbook": false,
+    "cost_status_declared_in_workbook": false,
+    "transaction_line_identifier_present": false,
+    "numeric_parse_failures": 0,
+    "sum": 19853145.19,
+    "mean": 12517.75,
+    "median": 6750.0,
+    "minimum": 1400.3,
+    "maximum": 325245.2,
+    "zero_rows": 0,
+    "negative_rows": 0,
+    "fractional_amount_rows": 254,
+    "iqr_high_threshold": 25570.62,
+    "iqr_high_rows": 154,
+    "top_1_pct_cost_share_pct": 12.6,
+    "top_5_pct_cost_share_pct": 30.94,
+    "top_10_pct_cost_share_pct": 43.58,
+    "by_service_year": {
+      "2024": {"rows": 1, "cost": 135006.8},
+      "2025": {"rows": 1123, "cost": 15331857.14},
+      "2026": {"rows": 462, "cost": 4386281.25}
+    }
+  },
+  "baseline_reconciliation": {
+    "pdf_pm_cm": {"rows_or_jobs": 994, "baseline": 12590005.44, "target_20_pct": 2518001.09},
+    "documented_dashboard": {"rows_or_jobs": 1124, "baseline": 15359352.14, "target_20_pct": 3071870.43},
+    "rev1_workbook_2025": {"rows_or_jobs": 1123, "baseline": 15331857.14, "target_20_pct": 3066371.43},
+    "rev1_minus_pdf": 2741851.7,
+    "rev1_minus_pdf_pct_of_pdf": 21.78,
+    "rev1_minus_dashboard": -27495.0
+  },
+  "work_type_profile": {
+    "all_years": {
+      "CM": {"rows": 1413, "cost": 17573203.39},
+      "PM": {"rows": 173, "cost": 2279941.8}
+    },
+    "2025": {
+      "CM": {"rows": 975, "cost": 13226635.84},
+      "PM": {"rows": 148, "cost": 2105221.3}
+    },
+    "bm_mapping_provenance_present": false
+  },
+  "unknown_symptom_proxy": {
+    "definition": "PROB_DETAIL_DESC is blank or Other",
+    "all_years": {"rows": 418, "row_pct": 26.36, "cost": 7809063.79, "cost_pct": 39.33},
+    "2025": {"rows": 319, "row_pct": 28.41, "cost": 6179788.49, "cost_pct": 40.31},
+    "2026": {"rows": 98, "row_pct": 21.21, "cost": 1494268.5, "cost_pct": 34.07}
+  },
+  "asset_coverage": {
+    "all_years": {"populated": 170, "coverage_pct": 10.72, "missing_cost": 18500136.99, "missing_cost_pct": 93.18},
+    "2025": {"populated": 104, "coverage_pct": 9.26, "missing_cost": 14399292.14, "missing_cost_pct": 93.92},
+    "2026": {"populated": 66, "coverage_pct": 14.29, "missing_cost": 3965838.05, "missing_cost_pct": 90.41}
+  },
+  "structural_null_cohort": {
+    "rows": 136,
+    "cost": 3046805.9,
+    "cost_pct": 15.35,
+    "identical_missing_mask_column_count": 12
+  },
+  "date_profile": {
+    "assumed_text_date_locale": "month_first_en_US_pending_source_confirmation",
+    "SERVICE_DATE": {"parsed": 1586, "minimum": "2024-12-25T00:00:00", "maximum": "2026-06-29T14:41:59", "future_rows": 0},
+    "ASSIGNED_DATE": {"parsed": 1451, "minimum": "2025-01-03T08:47:28", "maximum": "2026-06-29T14:42:44", "future_rows": 0},
+    "WORKINPROGRESS": {"parsed": 1053, "text_rows": 120, "day_month_ambiguous_text_rows": 50, "minimum": "2025-01-04T14:40:00", "maximum_month_first": "2026-07-03T20:56:00", "future_rows_month_first": 0, "future_rows_if_day_first": 23},
+    "RESOLVED_DATE": {"parsed": 1436, "text_rows": 212, "day_month_ambiguous_text_rows": 77, "minimum": "2025-01-04T14:40:48", "maximum_month_first": "2026-07-03T20:57:51", "future_rows_month_first": 0, "future_rows_if_day_first": 31},
+    "CLOSE_DATE": {"parsed": 1585, "minimum": "2025-01-04T13:36:27", "maximum": "2026-07-06T22:41:03", "future_rows": 0},
+    "month_first_sequence_violations": {"assigned_before_service": 2, "wip_before_assigned": 0, "resolved_before_service": 0, "resolved_before_wip": 0, "close_before_service": 0, "close_before_resolved": 2},
+    "closed_rows": 1585,
+    "closed_missing_assigned": 135,
+    "closed_missing_resolved": 149,
+    "service_month_label_mismatch": 1
+  },
+  "mapping_integrity": {
+    "site_id_to_multiple_site_names": 35,
+    "site_name_to_multiple_site_ids": 1,
+    "group_id_to_multiple_group_names": 1,
+    "group_name_to_multiple_group_ids": 1,
+    "vendor_code_to_multiple_vendor_names": 0,
+    "service_status_code_to_multiple_descriptions": 0,
+    "severity_code_to_multiple_descriptions": 0,
+    "work_type_code_to_multiple_descriptions": 0,
+    "sap_pm_order_type_to_multiple_descriptions": 0,
+    "province_raw_distinct": 129,
+    "province_normalized_distinct": 128
+  },
+  "privacy_pattern_scan": {
+    "note": "Pattern matches are candidates, not confirmed personal data; no matched values are retained.",
+    "direct_identifier_columns_present": [
+      "TECHNICIAN_NAME",
+      "USER_UPDATED_NEW",
+      "USER_UPDATED_ASSIGNED",
+      "USER_UPDATED_TO_TECHNICIAN",
+      "USER_UPDATED_ON_THE_WAY",
+      "USER_UPDATED_INPROGRESS",
+      "USER_UPDATED_RESOLVED",
+      "USER_UPDATED_CLOSED"
+    ],
+    "CALL_DETAIL": {"nonblank_rows": 1555, "distinct": 1491, "phone_like_rows": 28, "thai_name_title_like_rows": 15, "valid_checksum_13_digit_like_rows": 3, "email_rows": 0, "url_rows": 0},
+    "asset_field_valid_checksum_13_digit_like_rows": 3,
+    "workbook_creator_metadata_present": true,
+    "workbook_last_modified_by_metadata_present": true
+  },
+  "git_leakage_check": {
+    "xlsx_ignored": true,
+    "xlsx_tracked": false,
+    "pbix_ignored": true,
+    "pbix_tracked": false,
+    "tracked_source_binary_count_despite_ignore_rules": 2,
+    "tracked_source_binary_types": {"docx": 1, "pdf": 1}
+  },
+  "readiness": {
+    "official_saving_kpi": "blocked",
+    "finance_reconciliation": "not_evaluable_missing_control_source",
+    "descriptive_service_order_dashboard": "conditional",
+    "symptom_root_cause_analysis": "blocked",
+    "repeat_repair_bad_actor": "blocked",
+    "public_git_publication": "blocked_pending_tracked_binary_review"
+  }
+}

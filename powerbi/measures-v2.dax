@@ -1,0 +1,722 @@
+// POWER BI SAVING PROJECT — MEASURES V2
+// Model contract: powerbi/model-implementation-guide-v2.md
+// Business timezone: Asia/Bangkok
+// Current workbook amount is RecordedCostTHB at service-order grain.
+// It is NOT SAP Actual and must not be presented as Finance-approved saving.
+//
+// Recommended format strings:
+// Currency: ฿#,0.00;[Red]-฿#,0.00;–
+// Whole number: #,0;[Red]-#,0;–
+// Hours/minutes: #,0.0;[Red]-#,0.0;–
+// Percent: 0.0%;[Red]-0.0%;–
+// Date: dd mmm yyyy
+
+// ============================================================================
+// PHASE 1 — MODEL CONTROL
+// Prerequisite: one-row ModelControl table described in the implementation guide.
+// Display folder: 00 Model Control
+// ============================================================================
+Baseline Year :=
+SELECTEDVALUE ( ModelControl[BaselineYear], 2025 )
+
+Reduction Target % :=
+SELECTEDVALUE ( ModelControl[ReductionTargetPct], 0.20 )
+
+Core Classification Threshold % :=
+SELECTEDVALUE ( ModelControl[CoreClassificationThresholdPct], 0.95 )
+
+Asset Match Threshold % :=
+SELECTEDVALUE ( ModelControl[AssetMatchThresholdPct], 0.98 )
+
+SAP Match Threshold % :=
+SELECTEDVALUE ( ModelControl[SAPMatchThresholdPct], 0.98 )
+
+Reconciliation Tolerance % :=
+SELECTEDVALUE ( ModelControl[ReconciliationTolerancePct], 0.01 )
+
+Baseline Approval Status :=
+SELECTEDVALUE ( ModelControl[BaselineApprovalStatus], "PENDING" )
+
+Safety Guardrail Status :=
+SELECTEDVALUE ( ModelControl[SafetyGuardrailStatus], "PENDING" )
+
+Statutory Compliance Status :=
+SELECTEDVALUE ( ModelControl[StatutoryComplianceStatus], "PENDING" )
+
+Official Complete Date :=
+MAX ( ModelControl[OfficialThroughDate] )
+
+Provisional Complete Date :=
+// DEV diagnostic only. Never substitute this measure into an official KPI.
+VAR _LatestClose =
+    MAXX (
+        ALL ( FactServiceOrder ),
+        FactServiceOrder[CloseDateTime]
+    )
+RETURN
+    IF (
+        NOT ISBLANK ( _LatestClose ),
+        EOMONTH ( _LatestClose, -1 )
+    )
+
+Comparable Period Label :=
+VAR _Cutoff = [Official Complete Date]
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        "Period not approved",
+        "Official through " & FORMAT ( _Cutoff, "dd mmm yyyy" )
+    )
+
+// ============================================================================
+// PHASE 1 — CORE SERVICE-ORDER MEASURES
+// Display folder: 01 Service Orders
+// ============================================================================
+
+Rows Loaded :=
+COUNTROWS ( FactServiceOrder )
+
+Work Order Count :=
+DISTINCTCOUNT ( FactServiceOrder[ServiceID] )
+
+Duplicate Service ID Count :=
+[Rows Loaded] - [Work Order Count]
+
+Reported Work Order Count :=
+[Work Order Count]
+
+Assigned Work Order Count (Assigned Date) :=
+CALCULATE (
+    [Work Order Count],
+    USERELATIONSHIP ( DimDate[DateKey], FactServiceOrder[AssignedDateKey] ),
+    NOT ISBLANK ( FactServiceOrder[AssignedDateKey] )
+)
+
+Resolved Work Order Count (Resolved Date) :=
+CALCULATE (
+    [Work Order Count],
+    USERELATIONSHIP ( DimDate[DateKey], FactServiceOrder[ResolvedDateKey] ),
+    NOT ISBLANK ( FactServiceOrder[ResolvedDateKey] )
+)
+
+Closed Work Order Count (Closed Date) :=
+CALCULATE (
+    [Work Order Count],
+    USERELATIONSHIP ( DimDate[DateKey], FactServiceOrder[CloseDateKey] ),
+    FactServiceOrder[IsClosed] = TRUE ()
+)
+
+// ============================================================================
+// PHASE 1 — RECORDED COST PROXY
+// Display folder: 02 Recorded Cost Proxy
+// ============================================================================
+
+Recorded Cost :=
+SUM ( FactServiceOrder[RecordedCostTHB] )
+
+Average Recorded Cost per Work Order :=
+DIVIDE ( [Recorded Cost], [Work Order Count] )
+
+PM Work Order Count :=
+CALCULATE (
+    [Work Order Count],
+    KEEPFILTERS ( DimWorkType[WorkTypeKey] = "PM" )
+)
+
+CM Work Order Count :=
+CALCULATE (
+    [Work Order Count],
+    KEEPFILTERS ( DimWorkType[WorkTypeKey] = "CM" )
+)
+
+PM Recorded Cost :=
+CALCULATE (
+    [Recorded Cost],
+    KEEPFILTERS ( DimWorkType[WorkTypeKey] = "PM" )
+)
+
+CM Recorded Cost :=
+CALCULATE (
+    [Recorded Cost],
+    KEEPFILTERS ( DimWorkType[WorkTypeKey] = "CM" )
+)
+
+CM Cost Share % :=
+// Denominator deliberately retains UNKNOWN work type if it appears later.
+DIVIDE ( [CM Recorded Cost], [Recorded Cost] )
+
+Recorded Cost by Closed Date :=
+CALCULATE (
+    [Recorded Cost],
+    USERELATIONSHIP ( DimDate[DateKey], FactServiceOrder[CloseDateKey] )
+)
+
+Baseline Recorded Cost :=
+VAR _BaselineYear = [Baseline Year]
+RETURN
+    CALCULATE (
+        [Recorded Cost],
+        FILTER (
+            ALL ( DimDate ),
+            DimDate[Year] = _BaselineYear
+        )
+    )
+
+Current Comparable Recorded Cost :=
+VAR _Cutoff = [Official Complete Date]
+VAR _CurrentYear = YEAR ( _Cutoff )
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        BLANK (),
+        CALCULATE (
+            [Recorded Cost],
+            FILTER (
+                ALL ( DimDate ),
+                DimDate[Year] = _CurrentYear
+                    && DimDate[Date] <= _Cutoff
+            )
+        )
+    )
+
+Baseline Comparable Recorded Cost :=
+VAR _Cutoff = [Official Complete Date]
+VAR _BaselineYear = [Baseline Year]
+VAR _BaselineMonthEnd =
+    EOMONTH ( DATE ( _BaselineYear, MONTH ( _Cutoff ), 1 ), 0 )
+VAR _SafeDay =
+    MIN ( DAY ( _Cutoff ), DAY ( _BaselineMonthEnd ) )
+VAR _BaselineCutoff =
+    DATE ( _BaselineYear, MONTH ( _Cutoff ), _SafeDay )
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        BLANK (),
+        CALCULATE (
+            [Recorded Cost],
+            FILTER (
+                ALL ( DimDate ),
+                DimDate[Year] = _BaselineYear
+                    && DimDate[Date] <= _BaselineCutoff
+            )
+        )
+    )
+
+Recorded Cost Avoidance Proxy :=
+[Baseline Comparable Recorded Cost] - [Current Comparable Recorded Cost]
+
+Recorded Cost Reduction Proxy % :=
+DIVIDE (
+    [Recorded Cost Avoidance Proxy],
+    [Baseline Comparable Recorded Cost]
+)
+
+Recorded Cost Target Proxy :=
+[Baseline Comparable Recorded Cost] * [Reduction Target %]
+
+Recorded Cost Gap to Target Proxy :=
+[Recorded Cost Avoidance Proxy] - [Recorded Cost Target Proxy]
+
+Recorded Cost Proxy Status :=
+VAR _Cutoff = [Official Complete Date]
+VAR _BaselineApproved = [Baseline Approval Status] = "APPROVED"
+VAR _DQStatus = [Data Quality Gate Status]
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( _Cutoff ), "BLOCKED - PERIOD NOT APPROVED",
+        NOT _BaselineApproved, "BLOCKED - BASELINE NOT APPROVED",
+        _DQStatus <> "READY", "BLOCKED - " & _DQStatus,
+        "PROXY ONLY - NOT FINANCE SAVING"
+    )
+
+Recorded Cost Proxy Display :=
+VAR _Status = [Recorded Cost Proxy Status]
+RETURN
+    IF (
+        _Status = "PROXY ONLY - NOT FINANCE SAVING",
+        [Recorded Cost Reduction Proxy %]
+    )
+
+// ============================================================================
+// PHASE 1 — ENGINEERING / SLA
+// Display folder: 03 Engineering and SLA
+// ============================================================================
+
+SLA Evaluated Count :=
+CALCULATE (
+    [Work Order Count],
+    FILTER (
+        FactServiceOrder,
+        NOT ISBLANK ( FactServiceOrder[IsSLAMet] )
+    )
+)
+
+SLA Met Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSLAMet] = TRUE ()
+)
+
+SLA Missed Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSLAMet] = FALSE ()
+)
+
+SLA Compliance % :=
+DIVIDE ( [SLA Met Count], [SLA Evaluated Count] )
+
+SLA Breach Minutes :=
+SUMX (
+    FILTER (
+        FactServiceOrder,
+        FactServiceOrder[IsSLAMet] = FALSE ()
+            && NOT ISBLANK ( FactServiceOrder[LeadTimeMinutes] )
+            && NOT ISBLANK ( FactServiceOrder[SLATargetMinutes] )
+    ),
+    MAX (
+        0,
+        FactServiceOrder[LeadTimeMinutes]
+            - FactServiceOrder[SLATargetMinutes]
+    )
+)
+
+Average Lead Time Hours :=
+DIVIDE (
+    AVERAGE ( FactServiceOrder[LeadTimeMinutes] ),
+    60
+)
+
+P95 Lead Time Hours :=
+DIVIDE (
+    PERCENTILEX.INC (
+        FILTER (
+            FactServiceOrder,
+            NOT ISBLANK ( FactServiceOrder[LeadTimeMinutes] )
+        ),
+        FactServiceOrder[LeadTimeMinutes],
+        0.95
+    ),
+    60
+)
+
+Average Technician Time Hours :=
+DIVIDE (
+    AVERAGE ( FactServiceOrder[TechnicianTimeMinutes] ),
+    60
+)
+
+Average Call Center Time Minutes :=
+AVERAGE ( FactServiceOrder[CallCenterTimeMinutes] )
+
+// ============================================================================
+// PHASE 1 — DATA QUALITY
+// Display folder: 04 Data Quality
+// ============================================================================
+
+Work Type Coverage % :=
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        FILTER (
+            FactServiceOrder,
+            NOT ISBLANK ( FactServiceOrder[WorkTypeKey] )
+                && FactServiceOrder[WorkTypeKey] <> "UNKNOWN"
+        )
+    ),
+    [Work Order Count]
+)
+
+Site Coverage % :=
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        FILTER (
+            FactServiceOrder,
+            NOT ISBLANK ( FactServiceOrder[SiteKey] )
+                && FactServiceOrder[SiteKey] <> "UNKNOWN"
+        )
+    ),
+    [Work Order Count]
+)
+
+Symptom Coverage % :=
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        KEEPFILTERS ( DimSymptom[IsUnknown] = FALSE () )
+    ),
+    [Work Order Count]
+)
+
+Severity Coverage % :=
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        FILTER (
+            FactServiceOrder,
+            NOT ISBLANK ( FactServiceOrder[SeverityKey] )
+                && FactServiceOrder[SeverityKey] <> "UNKNOWN"
+        )
+    ),
+    [Work Order Count]
+)
+
+Core Classification Coverage % :=
+MIN (
+    [Work Type Coverage %],
+    MIN (
+        [Site Coverage %],
+        MIN ( [Symptom Coverage %], [Severity Coverage %] )
+    )
+)
+
+Asset Capture % :=
+// Capture is not the same as match-to-master.
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        FactServiceOrder[HasAssetReference] = TRUE ()
+    ),
+    [Work Order Count]
+)
+
+SAP Order Capture % :=
+// Presence of PMOrder is not the same as match-to-SAP.
+DIVIDE (
+    CALCULATE (
+        [Work Order Count],
+        FILTER (
+            FactServiceOrder,
+            NOT ISBLANK ( FactServiceOrder[PMOrder] )
+        )
+    ),
+    [Work Order Count]
+)
+
+Invalid Source Year-Month Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSourceYearMonthConsistent] = FALSE ()
+)
+
+Invalid Date Sequence Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsDateSequenceValid] = FALSE ()
+)
+
+Duration Reconciliation Exception Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsDurationConsistent] = FALSE ()
+)
+
+SLA Rule Exception Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSLAConsistent] = FALSE ()
+)
+
+Invalid Recorded Cost Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsRecordedCostValid] = FALSE ()
+)
+
+Ambiguous Site Work Order Count :=
+CALCULATE (
+    [Work Order Count],
+    KEEPFILTERS ( DimSite[IsNameAmbiguous] = TRUE () )
+)
+
+Data Quality Gate Status :=
+VAR _Threshold = [Core Classification Threshold %]
+RETURN
+    SWITCH (
+        TRUE (),
+        [Duplicate Service ID Count] > 0, "BLOCKED - DUPLICATE SERVICE ID",
+        [Invalid Recorded Cost Count] > 0, "BLOCKED - INVALID COST",
+        [Invalid Date Sequence Count] > 0, "BLOCKED - DATE SEQUENCE",
+        [Duration Reconciliation Exception Count] > 0, "BLOCKED - DURATION RECONCILIATION",
+        [SLA Rule Exception Count] > 0, "BLOCKED - SLA RULE",
+        [Core Classification Coverage %] < _Threshold, "BLOCKED - CLASSIFICATION COVERAGE",
+        [Ambiguous Site Work Order Count] > 0, "BLOCKED - SITE MASTER AMBIGUITY",
+        "READY"
+    )
+
+// ============================================================================
+// PHASE 1 — REFRESH AUDIT
+// Prerequisite: RefreshAudit table from the implementation guide.
+// Display folder: 05 Refresh
+// ============================================================================
+
+Last Source Modified At :=
+MAX ( RefreshAudit[SourceModifiedAt] )
+
+Last Model Refresh At :=
+MAX ( RefreshAudit[RefreshFinishedAtLocal] )
+
+Freshness Minutes :=
+VAR _SourceTime = [Last Source Modified At]
+RETURN
+    IF (
+        NOT ISBLANK ( _SourceTime ),
+        DATEDIFF ( _SourceTime, NOW (), MINUTE )
+    )
+
+// ============================================================================
+// PHASE 2 — MATCH QUALITY
+// These columns exist in FactServiceOrder but remain BLANK until evaluated
+// against the approved Asset master and SAP extract.
+// Display folder: 06 Match Quality
+// ============================================================================
+
+Asset Match Evaluated Count :=
+CALCULATE (
+    [Work Order Count],
+    FILTER (
+        FactServiceOrder,
+        NOT ISBLANK ( FactServiceOrder[IsAssetMatched] )
+    )
+)
+
+Asset Matched Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsAssetMatched] = TRUE ()
+)
+
+Asset Match % :=
+DIVIDE ( [Asset Matched Count], [Asset Match Evaluated Count] )
+
+SAP Match Evaluated Count :=
+CALCULATE (
+    [Work Order Count],
+    FILTER (
+        FactServiceOrder,
+        NOT ISBLANK ( FactServiceOrder[IsSAPOrderMatched] )
+    )
+)
+
+SAP Matched Count :=
+CALCULATE (
+    [Work Order Count],
+    FactServiceOrder[IsSAPOrderMatched] = TRUE ()
+)
+
+SAP Order Match % :=
+DIVIDE ( [SAP Matched Count], [SAP Match Evaluated Count] )
+
+// ============================================================================
+// PHASE 2 — FINANCE FACTS
+// Add this block only after these tables/columns and date relationships exist:
+// FactCostTransaction[SignedAmountExVAT]
+// FactCommitment[SignedAmountExVAT], FactCommitment[Status]
+// FactAccrual[SignedAmountExVAT]
+// FinanceControl[SignedAmountExVAT]
+// FactSavingLedger[NetSaving], FactSavingLedger[FinanceStatus]
+// Display folder: 07 Finance and Saving
+// ============================================================================
+
+Actual Cost :=
+SUM ( FactCostTransaction[SignedAmountExVAT] )
+
+Open Commitment :=
+CALCULATE (
+    SUM ( FactCommitment[SignedAmountExVAT] ),
+    FactCommitment[Status] IN { "Open", "Received" }
+)
+
+Accrued Cost :=
+SUM ( FactAccrual[SignedAmountExVAT] )
+
+Cost Exposure :=
+[Actual Cost] + [Open Commitment] + [Accrued Cost]
+
+Finance Control Total :=
+SUM ( FinanceControl[SignedAmountExVAT] )
+
+Finance Reconciliation Variance :=
+[Cost Exposure] - [Finance Control Total]
+
+Finance Reconciliation Variance % :=
+DIVIDE (
+    ABS ( [Finance Reconciliation Variance] ),
+    ABS ( [Finance Control Total] )
+)
+
+Baseline Exposure :=
+VAR _BaselineYear = [Baseline Year]
+RETURN
+    CALCULATE (
+        [Cost Exposure],
+        FILTER (
+            ALL ( DimDate ),
+            DimDate[Year] = _BaselineYear
+        )
+    )
+
+Current Comparable Exposure :=
+VAR _Cutoff = [Official Complete Date]
+VAR _CurrentYear = YEAR ( _Cutoff )
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        BLANK (),
+        CALCULATE (
+            [Cost Exposure],
+            FILTER (
+                ALL ( DimDate ),
+                DimDate[Year] = _CurrentYear
+                    && DimDate[Date] <= _Cutoff
+            )
+        )
+    )
+
+Baseline Comparable Exposure :=
+VAR _Cutoff = [Official Complete Date]
+VAR _BaselineYear = [Baseline Year]
+VAR _BaselineMonthEnd =
+    EOMONTH ( DATE ( _BaselineYear, MONTH ( _Cutoff ), 1 ), 0 )
+VAR _SafeDay =
+    MIN ( DAY ( _Cutoff ), DAY ( _BaselineMonthEnd ) )
+VAR _BaselineCutoff =
+    DATE ( _BaselineYear, MONTH ( _Cutoff ), _SafeDay )
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        BLANK (),
+        CALCULATE (
+            [Cost Exposure],
+            FILTER (
+                ALL ( DimDate ),
+                DimDate[Year] = _BaselineYear
+                    && DimDate[Date] <= _BaselineCutoff
+            )
+        )
+    )
+
+Gross Exposure Saving Comparable :=
+[Baseline Comparable Exposure] - [Current Comparable Exposure]
+
+Exposure Reduction % :=
+DIVIDE (
+    [Gross Exposure Saving Comparable],
+    [Baseline Comparable Exposure]
+)
+
+Saving Target Comparable :=
+[Baseline Comparable Exposure] * [Reduction Target %]
+
+Gap to Reduction Target :=
+[Gross Exposure Saving Comparable] - [Saving Target Comparable]
+
+Finance Approved Net Saving :=
+CALCULATE (
+    SUM ( FactSavingLedger[NetSaving] ),
+    FactSavingLedger[FinanceStatus] = "Approved"
+)
+
+Publication Readiness Status :=
+VAR _Cutoff = [Official Complete Date]
+VAR _BaselineApproved = [Baseline Approval Status] = "APPROVED"
+VAR _DQReady = [Data Quality Gate Status] = "READY"
+VAR _FinanceControlAvailable = NOT ISBLANK ( [Finance Control Total] )
+VAR _FinanceOK =
+    [Finance Reconciliation Variance %]
+        <= [Reconciliation Tolerance %]
+VAR _AssetMatch = [Asset Match %]
+VAR _SAPMatch = [SAP Order Match %]
+VAR _SafetyPass = [Safety Guardrail Status] = "PASS"
+VAR _StatutoryPass = [Statutory Compliance Status] = "PASS"
+RETURN
+    SWITCH (
+        TRUE (),
+        ISBLANK ( _Cutoff ), "BLOCKED - PERIOD NOT APPROVED",
+        NOT _BaselineApproved, "BLOCKED - BASELINE NOT APPROVED",
+        NOT _DQReady, "BLOCKED - DATA QUALITY",
+        NOT _FinanceControlAvailable, "BLOCKED - NO FINANCE CONTROL",
+        NOT _FinanceOK, "BLOCKED - FINANCE RECONCILIATION",
+        ISBLANK ( _AssetMatch ), "BLOCKED - ASSET MATCH NOT EVALUATED",
+        _AssetMatch < [Asset Match Threshold %], "BLOCKED - ASSET MATCH",
+        ISBLANK ( _SAPMatch ), "BLOCKED - SAP MATCH NOT EVALUATED",
+        _SAPMatch < [SAP Match Threshold %], "BLOCKED - SAP MATCH",
+        NOT _SafetyPass, "BLOCKED - SAFETY GUARDRAIL",
+        NOT _StatutoryPass, "BLOCKED - STATUTORY COMPLIANCE",
+        "READY"
+    )
+
+Target Status :=
+VAR _Readiness = [Publication Readiness Status]
+RETURN
+    SWITCH (
+        TRUE (),
+        _Readiness <> "READY", _Readiness,
+        [Exposure Reduction %] >= [Reduction Target %], "ON TARGET",
+        "BELOW TARGET"
+    )
+
+Official Saving KPI Display :=
+IF (
+    [Publication Readiness Status] = "READY",
+    [Exposure Reduction %]
+)
+
+KPI Basis Label :=
+VAR _Cutoff = [Official Complete Date]
+VAR _BaselineYear = [Baseline Year]
+RETURN
+    IF (
+        ISBLANK ( _Cutoff ),
+        "Official KPI blocked: period not approved",
+        "Exposure basis | Baseline "
+            & FORMAT ( _BaselineYear, "0" )
+            & " | Through "
+            & FORMAT ( _Cutoff, "dd mmm yyyy" )
+    )
+
+// ============================================================================
+// PHASE 3 — OPERATIONAL SAVING (OPTIONAL AFTER FACTMAINTENANCEACTION EXISTS)
+// Required columns: Outcome, ActionType, ReopenedWithin30D,
+// StandardDispatchCost, InterventionCost.
+// Display folder: 08 Operational Saving
+// ============================================================================
+
+Validated Avoided Dispatch Cost :=
+SUMX (
+    FILTER (
+        FactMaintenanceAction,
+        FactMaintenanceAction[Outcome] = "Resolved"
+            && FactMaintenanceAction[ActionType] IN { "Remote", "Self" }
+            && FactMaintenanceAction[ReopenedWithin30D] = FALSE ()
+    ),
+    MAX (
+        0,
+        FactMaintenanceAction[StandardDispatchCost]
+            - FactMaintenanceAction[InterventionCost]
+    )
+)
+
+// ============================================================================
+// RLS EXAMPLE — use as the role filter expression on DimSite, not as a measure.
+// SecurityUserSite must remain disconnected and contain only approved mappings.
+//
+// VAR _UPN = LOWER ( USERPRINCIPALNAME () )
+// VAR _SiteKey = DimSite[SiteKey]
+// RETURN
+//     COUNTROWS (
+//         FILTER (
+//             SecurityUserSite,
+//             LOWER ( SecurityUserSite[UserUPN] ) = _UPN
+//                 && SecurityUserSite[SiteKey] = _SiteKey
+//                 && SecurityUserSite[IsActive] = TRUE ()
+//                 && SecurityUserSite[ValidFrom] <= TODAY ()
+//                 && (
+//                     ISBLANK ( SecurityUserSite[ValidTo] )
+//                         || SecurityUserSite[ValidTo] >= TODAY ()
+//                 )
+//         )
+//     ) > 0
+// ============================================================================

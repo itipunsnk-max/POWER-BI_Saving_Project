@@ -1,0 +1,13 @@
+.git/
+.openai/
+tmp/
+output/
+tools/__pycache__/
+*.pyc
+*.xlsx
+*.xls
+*.pbix
+*.pbit
+*.docx
+*.pdf
+*.log
