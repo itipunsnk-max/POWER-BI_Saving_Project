@@ -4,6 +4,8 @@
 
 > สถานะ Rev.1 ณ 7 สิงหาคม 2026: พร้อมใช้เป็น analytical prototype และ controlled pilot แต่ยังไม่ควรประกาศ “Saving ทางการเงิน” จนกว่า Finance จะอนุมัตินิยาม baseline, accrual และขอบเขตงานที่รวม/ไม่รวม
 
+**Live demo:** [power-bi-saving-project.vercel.app](https://power-bi-saving-project.vercel.app)
+
 ![Executive mockup](assets/mockup/service-intelligence-desktop.png)
 
 ## ผลลัพธ์สำคัญ
