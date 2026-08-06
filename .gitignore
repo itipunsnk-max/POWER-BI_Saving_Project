@@ -11,6 +11,8 @@ tmp/
 output/
 *.log
 assets/infographic/*.png
+tools/__pycache__/
+*.pyc
 
 # OS/editor
 .DS_Store

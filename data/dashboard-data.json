@@ -1,0 +1,706 @@
+{
+  "meta": {
+    "workbook": "service_tracking_cleaned-Rev.1.xlsx",
+    "sheet": "Clean_Data",
+    "review_date": "2026-08-07",
+    "rows": 1586,
+    "columns": 52,
+    "latest_service_date": "2026-06-29T14:41:59",
+    "latest_close_date": "2026-07-06T22:41:03",
+    "comparison": {
+      "baseline_year": 2025,
+      "current_year": 2026,
+      "through_month": 6,
+      "label": "Jan-06 2025 vs Jan-06 2026"
+    },
+    "text_date_locale": "month-first en-US observed; upstream ISO 8601 required",
+    "privacy": "Sanitized aggregates only; no raw identifiers, people, sites, vendors, or free text exported."
+  },
+  "headline": {
+    "total_rows": 1586,
+    "total_cost": 19853145.19,
+    "annual_2025_cost": 15331857.14,
+    "documented_2025_baseline": 15359352.14,
+    "baseline_difference": 27495.0,
+    "documented_pm_cm_baseline": 12590005.44,
+    "pm_cm_baseline_difference": 2741851.700000001,
+    "baseline_comparable_cost": 7770078.59,
+    "current_comparable_cost": 4386281.25,
+    "gross_apparent_reduction": 3383797.34,
+    "apparent_reduction_pct": 0.43549074836320284,
+    "target_saving": 1554015.718,
+    "target_cost": 6216062.8719999995,
+    "target_headroom": 1829781.6219999995,
+    "finance_validated_saving": null,
+    "status": "provisional_actual_only"
+  },
+  "engineeringDecomposition": {
+    "baseline": 7770078.59,
+    "volume_effect": -745076.0291780821,
+    "work_type_mix_effect": 30904.503993149367,
+    "rate_scope_and_exposure_effect": -2669625.814815066,
+    "current": 4386281.25,
+    "reconciliation_check": 9.313225746154785e-10,
+    "warning": "Rate/scope effect also includes severity mix, job scope, pricing and missing commitment/accrual exposure; it is not proven saving."
+  },
+  "operations": {
+    "sla_assessed_rows": 1449,
+    "sla_coverage": 0.9136191677175284,
+    "sla_met_rate": 0.6169772256728778,
+    "current_sla_assessed_rows": 447,
+    "current_sla_met_rate": 0.6510067114093959,
+    "meaningful_symptom_rows": 1168,
+    "meaningful_symptom_coverage": 0.7364438839848676,
+    "unknown_symptom_cost": 7809063.790000001,
+    "unknown_symptom_cost_share": 0.39334139327875434,
+    "asset_rows": 170,
+    "asset_coverage": 0.10718789407313997,
+    "vendor_code_rows": 1450,
+    "vendor_code_coverage": 0.914249684741488
+  },
+  "quality": {
+    "exact_duplicate_rows": 0,
+    "service_id_duplicate_rows": 0,
+    "date_sequence_violations": 4,
+    "date_sequence_comparisons": 6576,
+    "pass_count": 2,
+    "fail_count": 5,
+    "blocked_count": 1,
+    "gates": [
+      {
+        "key": "service_id_unique",
+        "label": "Service ID ไม่ซ้ำ",
+        "actual": 1.0,
+        "target": 1.0,
+        "unit": "ratio",
+        "direction": "eq",
+        "status": "pass",
+        "note": "Grain ต้องเป็น 1 แถวต่อ Service ID"
+      },
+      {
+        "key": "work_type_coverage",
+        "label": "PM/CM coverage",
+        "actual": 1.0,
+        "target": 0.98,
+        "unit": "ratio",
+        "direction": "gte",
+        "status": "pass",
+        "note": "ใช้เฉพาะค่า PM และ CM ที่ผ่าน mapping"
+      },
+      {
+        "key": "meaningful_symptom_coverage",
+        "label": "Meaningful symptom coverage",
+        "actual": 0.736444,
+        "target": 0.95,
+        "unit": "ratio",
+        "direction": "gte",
+        "status": "fail",
+        "note": "ไม่นับค่าว่างและ 'อื่น ๆ' เป็นอาการที่วิเคราะห์ได้"
+      },
+      {
+        "key": "asset_coverage",
+        "label": "Asset match coverage",
+        "actual": 0.107188,
+        "target": 0.98,
+        "unit": "ratio",
+        "direction": "gte",
+        "status": "fail",
+        "note": "จำเป็นต่อ Repeat Repair, MTBF และ Repair-vs-Replace"
+      },
+      {
+        "key": "vendor_code_coverage",
+        "label": "Vendor code coverage",
+        "actual": 0.91425,
+        "target": 0.98,
+        "unit": "ratio",
+        "direction": "gte",
+        "status": "fail",
+        "note": "ต้องใช้รหัสมาตรฐานแทนชื่ออิสระ"
+      },
+      {
+        "key": "date_sequence_validity",
+        "label": "Date sequence validity",
+        "actual": 0.999392,
+        "target": 1.0,
+        "unit": "ratio",
+        "direction": "eq",
+        "status": "fail",
+        "note": "พบลำดับเวลาผิด 4 จุดจาก 6576 comparisons"
+      },
+      {
+        "key": "source_freshness_days",
+        "label": "Source freshness",
+        "actual": 32.0,
+        "target": 7.0,
+        "unit": "days",
+        "direction": "lte",
+        "status": "fail",
+        "note": "ใช้วันที่ปิดงานล่าสุดเทียบวัน review; เกณฑ์ชั่วคราวไม่เกิน 7 วัน"
+      },
+      {
+        "key": "finance_reconciliation",
+        "label": "Finance reconciliation variance",
+        "actual": null,
+        "target": 0.01,
+        "unit": "ratio",
+        "direction": "lte",
+        "status": "blocked",
+        "note": "ไม่มี Actual + Commitment + Accrual และ Finance control total ใน workbook นี้"
+      }
+    ]
+  },
+  "comparableMonths": [
+    {
+      "year": 2025,
+      "month_number": 1,
+      "rows": 99,
+      "cost": 1207015.2
+    },
+    {
+      "year": 2025,
+      "month_number": 2,
+      "rows": 83,
+      "cost": 1390157.7
+    },
+    {
+      "year": 2025,
+      "month_number": 3,
+      "rows": 97,
+      "cost": 1942791.4
+    },
+    {
+      "year": 2025,
+      "month_number": 4,
+      "rows": 69,
+      "cost": 1041785.7
+    },
+    {
+      "year": 2025,
+      "month_number": 5,
+      "rows": 104,
+      "cost": 1320319.4
+    },
+    {
+      "year": 2025,
+      "month_number": 6,
+      "rows": 59,
+      "cost": 868009.19
+    },
+    {
+      "year": 2026,
+      "month_number": 1,
+      "rows": 92,
+      "cost": 823144.1
+    },
+    {
+      "year": 2026,
+      "month_number": 2,
+      "rows": 82,
+      "cost": 899019.8
+    },
+    {
+      "year": 2026,
+      "month_number": 3,
+      "rows": 74,
+      "cost": 844536.5
+    },
+    {
+      "year": 2026,
+      "month_number": 4,
+      "rows": 72,
+      "cost": 720025.7
+    },
+    {
+      "year": 2026,
+      "month_number": 5,
+      "rows": 75,
+      "cost": 615557.45
+    },
+    {
+      "year": 2026,
+      "month_number": 6,
+      "rows": 67,
+      "cost": 483997.7
+    }
+  ],
+  "monthly": [
+    {
+      "month": "2024-12",
+      "year": 2024,
+      "month_number": 12,
+      "PMACTTYPES": "CM",
+      "rows": 1,
+      "cost": 135006.8
+    },
+    {
+      "month": "2025-01",
+      "year": 2025,
+      "month_number": 1,
+      "PMACTTYPES": "CM",
+      "rows": 89,
+      "cost": 1070493.0
+    },
+    {
+      "month": "2025-01",
+      "year": 2025,
+      "month_number": 1,
+      "PMACTTYPES": "PM",
+      "rows": 10,
+      "cost": 136522.2
+    },
+    {
+      "month": "2025-02",
+      "year": 2025,
+      "month_number": 2,
+      "PMACTTYPES": "CM",
+      "rows": 70,
+      "cost": 1131969.2
+    },
+    {
+      "month": "2025-02",
+      "year": 2025,
+      "month_number": 2,
+      "PMACTTYPES": "PM",
+      "rows": 13,
+      "cost": 258188.5
+    },
+    {
+      "month": "2025-03",
+      "year": 2025,
+      "month_number": 3,
+      "PMACTTYPES": "CM",
+      "rows": 90,
+      "cost": 1878990.4
+    },
+    {
+      "month": "2025-03",
+      "year": 2025,
+      "month_number": 3,
+      "PMACTTYPES": "PM",
+      "rows": 7,
+      "cost": 63801.0
+    },
+    {
+      "month": "2025-04",
+      "year": 2025,
+      "month_number": 4,
+      "PMACTTYPES": "CM",
+      "rows": 66,
+      "cost": 1023585.7
+    },
+    {
+      "month": "2025-04",
+      "year": 2025,
+      "month_number": 4,
+      "PMACTTYPES": "PM",
+      "rows": 3,
+      "cost": 18200.0
+    },
+    {
+      "month": "2025-05",
+      "year": 2025,
+      "month_number": 5,
+      "PMACTTYPES": "CM",
+      "rows": 94,
+      "cost": 1215224.2
+    },
+    {
+      "month": "2025-05",
+      "year": 2025,
+      "month_number": 5,
+      "PMACTTYPES": "PM",
+      "rows": 10,
+      "cost": 105095.2
+    },
+    {
+      "month": "2025-06",
+      "year": 2025,
+      "month_number": 6,
+      "PMACTTYPES": "CM",
+      "rows": 58,
+      "cost": 864844.19
+    },
+    {
+      "month": "2025-06",
+      "year": 2025,
+      "month_number": 6,
+      "PMACTTYPES": "PM",
+      "rows": 1,
+      "cost": 3165.0
+    },
+    {
+      "month": "2025-07",
+      "year": 2025,
+      "month_number": 7,
+      "PMACTTYPES": "CM",
+      "rows": 80,
+      "cost": 1119003.05
+    },
+    {
+      "month": "2025-07",
+      "year": 2025,
+      "month_number": 7,
+      "PMACTTYPES": "PM",
+      "rows": 5,
+      "cost": 30114.0
+    },
+    {
+      "month": "2025-08",
+      "year": 2025,
+      "month_number": 8,
+      "PMACTTYPES": "CM",
+      "rows": 57,
+      "cost": 529547.9
+    },
+    {
+      "month": "2025-08",
+      "year": 2025,
+      "month_number": 8,
+      "PMACTTYPES": "PM",
+      "rows": 13,
+      "cost": 187570.4
+    },
+    {
+      "month": "2025-09",
+      "year": 2025,
+      "month_number": 9,
+      "PMACTTYPES": "CM",
+      "rows": 105,
+      "cost": 1229603.0
+    },
+    {
+      "month": "2025-09",
+      "year": 2025,
+      "month_number": 9,
+      "PMACTTYPES": "PM",
+      "rows": 12,
+      "cost": 132964.0
+    },
+    {
+      "month": "2025-10",
+      "year": 2025,
+      "month_number": 10,
+      "PMACTTYPES": "CM",
+      "rows": 95,
+      "cost": 1173684.25
+    },
+    {
+      "month": "2025-10",
+      "year": 2025,
+      "month_number": 10,
+      "PMACTTYPES": "PM",
+      "rows": 11,
+      "cost": 131643.5
+    },
+    {
+      "month": "2025-11",
+      "year": 2025,
+      "month_number": 11,
+      "PMACTTYPES": "CM",
+      "rows": 93,
+      "cost": 1302924.75
+    },
+    {
+      "month": "2025-11",
+      "year": 2025,
+      "month_number": 11,
+      "PMACTTYPES": "PM",
+      "rows": 49,
+      "cost": 907849.8
+    },
+    {
+      "month": "2025-12",
+      "year": 2025,
+      "month_number": 12,
+      "PMACTTYPES": "CM",
+      "rows": 78,
+      "cost": 686766.2
+    },
+    {
+      "month": "2025-12",
+      "year": 2025,
+      "month_number": 12,
+      "PMACTTYPES": "PM",
+      "rows": 14,
+      "cost": 130107.7
+    },
+    {
+      "month": "2026-01",
+      "year": 2026,
+      "month_number": 1,
+      "PMACTTYPES": "CM",
+      "rows": 91,
+      "cost": 820119.1
+    },
+    {
+      "month": "2026-01",
+      "year": 2026,
+      "month_number": 1,
+      "PMACTTYPES": "PM",
+      "rows": 1,
+      "cost": 3025.0
+    },
+    {
+      "month": "2026-02",
+      "year": 2026,
+      "month_number": 2,
+      "PMACTTYPES": "CM",
+      "rows": 78,
+      "cost": 886575.8
+    },
+    {
+      "month": "2026-02",
+      "year": 2026,
+      "month_number": 2,
+      "PMACTTYPES": "PM",
+      "rows": 4,
+      "cost": 12444.0
+    },
+    {
+      "month": "2026-03",
+      "year": 2026,
+      "month_number": 3,
+      "PMACTTYPES": "CM",
+      "rows": 68,
+      "cost": 765067.5
+    },
+    {
+      "month": "2026-03",
+      "year": 2026,
+      "month_number": 3,
+      "PMACTTYPES": "PM",
+      "rows": 6,
+      "cost": 79469.0
+    },
+    {
+      "month": "2026-04",
+      "year": 2026,
+      "month_number": 4,
+      "PMACTTYPES": "CM",
+      "rows": 68,
+      "cost": 684499.2
+    },
+    {
+      "month": "2026-04",
+      "year": 2026,
+      "month_number": 4,
+      "PMACTTYPES": "PM",
+      "rows": 4,
+      "cost": 35526.5
+    },
+    {
+      "month": "2026-05",
+      "year": 2026,
+      "month_number": 5,
+      "PMACTTYPES": "CM",
+      "rows": 73,
+      "cost": 604961.45
+    },
+    {
+      "month": "2026-05",
+      "year": 2026,
+      "month_number": 5,
+      "PMACTTYPES": "PM",
+      "rows": 2,
+      "cost": 10596.0
+    },
+    {
+      "month": "2026-06",
+      "year": 2026,
+      "month_number": 6,
+      "PMACTTYPES": "CM",
+      "rows": 59,
+      "cost": 450337.7
+    },
+    {
+      "month": "2026-06",
+      "year": 2026,
+      "month_number": 6,
+      "PMACTTYPES": "PM",
+      "rows": 8,
+      "cost": 33660.0
+    }
+  ],
+  "workTypeComparison": [
+    {
+      "work_type": "CM",
+      "period": "baseline",
+      "rows": 467,
+      "cost": 7185106.6899999995,
+      "average_cost": 15385.667430406851
+    },
+    {
+      "work_type": "CM",
+      "period": "current",
+      "rows": 437,
+      "cost": 4211560.750000001,
+      "average_cost": 9637.438787185356
+    },
+    {
+      "work_type": "PM",
+      "period": "baseline",
+      "rows": 44,
+      "cost": 584971.8999999999,
+      "average_cost": 13294.815909090907
+    },
+    {
+      "work_type": "PM",
+      "period": "current",
+      "rows": 25,
+      "cost": 174720.5,
+      "average_cost": 6988.82
+    }
+  ],
+  "problemType": [
+    {
+      "category": "SSDISP - ตู้จ่ายน้ำมัน",
+      "rows": 1262,
+      "cost": 12067616.15,
+      "share": 0.607844
+    },
+    {
+      "category": "SSTKUG - ถังน้ำมันใต้ดิน",
+      "rows": 224,
+      "cost": 5944479.49,
+      "share": 0.299423
+    },
+    {
+      "category": "SSPIPE - ระบบท่อน้ำมัน",
+      "rows": 41,
+      "cost": 1063766.75,
+      "share": 0.053582
+    },
+    {
+      "category": "SSBUILD - ระบบสถานีบริการ",
+      "rows": 25,
+      "cost": 403859.8,
+      "share": 0.020342
+    },
+    {
+      "category": "ไม่ระบุ",
+      "rows": 31,
+      "cost": 309470.5,
+      "share": 0.015588
+    },
+    {
+      "category": "SSATG - ระบบ ATG",
+      "rows": 1,
+      "cost": 55735.0,
+      "share": 0.002807
+    },
+    {
+      "category": "SSINFSTN - ที่เติมลม(อยู่กับที่)",
+      "rows": 2,
+      "cost": 8217.5,
+      "share": 0.000414
+    }
+  ],
+  "resolutionPareto": [
+    {
+      "category": "ถังน้ำมันบนดินขาสกี",
+      "rows": 183,
+      "cost": 4641766.59,
+      "share": 0.233805,
+      "cumulative_share": 0.233805
+    },
+    {
+      "category": "ตู้จ่ายน้ำมัน-แม่ปัมพ์/มิเตอร์",
+      "rows": 273,
+      "cost": 2885071.45,
+      "share": 0.145321,
+      "cumulative_share": 0.379126
+    },
+    {
+      "category": "ตู้จ่ายน้ำมัน-มอเตอร์/สายพาน",
+      "rows": 254,
+      "cost": 2267151.9,
+      "share": 0.114196,
+      "cumulative_share": 0.493322
+    },
+    {
+      "category": "ส่วนประกอบภายนอกตู้จ่าย-สายยาง",
+      "rows": 199,
+      "cost": 2175931.3,
+      "share": 0.109601,
+      "cumulative_share": 0.602923
+    },
+    {
+      "category": "ส่วนประกอบภายนอกตู้จ่าย-มือจ่าย",
+      "rows": 190,
+      "cost": 1787147.7,
+      "share": 0.090018,
+      "cumulative_share": 0.692942
+    },
+    {
+      "category": "ตู้จ่ายน้ำมัน-การแสดงผล",
+      "rows": 120,
+      "cost": 1083649.4,
+      "share": 0.054583,
+      "cumulative_share": 0.747525
+    },
+    {
+      "category": "ท่อน้ำมันบนดิน",
+      "rows": 60,
+      "cost": 894722.65,
+      "share": 0.045067,
+      "cumulative_share": 0.792592
+    },
+    {
+      "category": "ถังน้ำมันใต้ดิน",
+      "rows": 19,
+      "cost": 847073.35,
+      "share": 0.042667,
+      "cumulative_share": 0.835259
+    },
+    {
+      "category": "มาตจรวัดน้ำมัน",
+      "rows": 99,
+      "cost": 711452.4,
+      "share": 0.035836,
+      "cumulative_share": 0.871095
+    },
+    {
+      "category": "ส่วนประกอบภายนอกตู้จ่าย-อื่นๆ",
+      "rows": 66,
+      "cost": 631970.8,
+      "share": 0.031832,
+      "cumulative_share": 0.902927
+    },
+    {
+      "category": "ท่อน้ำมันใต้ดิน",
+      "rows": 5,
+      "cost": 580192.0,
+      "share": 0.029224,
+      "cumulative_share": 0.932151
+    },
+    {
+      "category": "ไม่ระบุ",
+      "rows": 31,
+      "cost": 309470.5,
+      "share": 0.015588,
+      "cumulative_share": 0.947739
+    }
+  ],
+  "costConcentration": [
+    {
+      "top_row_fraction": 0.01,
+      "row_count": 16,
+      "cost_share": 0.12602075268457752
+    },
+    {
+      "top_row_fraction": 0.05,
+      "row_count": 80,
+      "cost_share": 0.3093696888437453
+    },
+    {
+      "top_row_fraction": 0.1,
+      "row_count": 159,
+      "cost_share": 0.4358282683772586
+    },
+    {
+      "top_row_fraction": 0.2,
+      "row_count": 318,
+      "cost_share": 0.5943543568070787
+    }
+  ]
+}
