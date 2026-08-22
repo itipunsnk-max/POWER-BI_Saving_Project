@@ -1,3 +1,5 @@
+D:\OneDrive - PTTOR\PTTOR งานซ่อม ตลาดพาณิชย์ (ซฟ.2569)\__3.Transformation Service Tracking 22-6-69\__POWER-BI_Saving_Project
+
 # Service Intelligence & Saving Control Tower
 
 โครงการยกระดับข้อมูล Service Tracking ให้เป็นระบบตัดสินใจด้านงานซ่อมบำรุง ต้นทุน ความเสี่ยง และผลประหยัดสำหรับ Power BI โดยใช้ข้อมูล `service_tracking_cleaned-Rev.1.xlsx` เป็นฐานวิเคราะห์
